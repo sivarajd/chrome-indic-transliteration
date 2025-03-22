@@ -84,7 +84,9 @@ function transliterateTextByScript(text, script) {
       return transliterateGujarati(text);
     case 'odia':
       return transliterateOdia(text);
-    default:
+    case 'sinhala':
+      return transliterateSinhala(text);
+      default:
       return text;
   }
 }
@@ -521,6 +523,52 @@ function transliterateOdia(text) {
     };
 
     return processText(text, scriptType, isOdiaChar, vowels, consonants, vowelMarks, others, virama);
+}
+
+function transliterateSinhala(text) {
+    // Define mapping from Sinhala to ISO 15919
+    const vowels = {
+      'අ': 'a', 'ආ': 'ā', 'ඇ': 'æ', 'ඈ': 'ǣ', 'ඉ': 'i', 'ඊ': 'ī', 
+      'උ': 'u', 'ඌ': 'ū', 'ඍ': 'r̥', 'ඎ': 'r̥̄', 'ඏ': 'l̥', 'ඐ': 'l̥̄',
+      'එ': 'e', 'ඒ': 'ē', 'ඓ': 'ai', 'ඔ': 'o', 'ඕ': 'ō', 'ඖ': 'au'
+    };
+    
+    const consonants = {
+      'ක': 'k', 'ඛ': 'kh', 'ග': 'g', 'ඝ': 'gh', 'ඞ': 'ṅ', 'ඟ': 'ṅg',
+      'ච': 'c', 'ඡ': 'ch', 'ජ': 'j', 'ඣ': 'jh', 'ඤ': 'ñ', 'ඦ': 'ñj',
+      'ට': 'ṭ', 'ඨ': 'ṭh', 'ඩ': 'ḍ', 'ඪ': 'ḍh', 'ණ': 'ṇ', 'ඬ': 'ṇḍ',
+      'ත': 't', 'ථ': 'th', 'ද': 'd', 'ධ': 'dh', 'න': 'n', 'ඳ': 'nd',
+      'ප': 'p', 'ඵ': 'ph', 'බ': 'b', 'භ': 'bh', 'ම': 'm', 'ඹ': 'mb',
+      'ය': 'y', 'ර': 'r', 'ල': 'l', 'ව': 'v', 'ශ': 'ś', 
+      'ෂ': 'ṣ', 'ස': 's', 'හ': 'h', 'ළ': 'ḷ', 'ෆ': 'f'
+    };
+    
+    const vowelMarks = {
+      'ා': 'ā', 'ැ': 'æ', 'ෑ': 'ǣ', 'ි': 'i', 'ී': 'ī', 'ු': 'u', 'ූ': 'ū',
+      'ෘ': 'r̥', 'ෲ': 'r̥̄', 'ෟ': 'l̥', 'ෳ': 'l̥̄',
+      'ෙ': 'e', 'ේ': 'ē', 'ෛ': 'ai', 'ො': 'o', 'ෝ': 'ō', 'ෞ': 'au'
+    };
+    
+    const others = {
+      '්': '​', 'ං': 'ṁ', 'ඃ': 'ḥ', '෴': '.',
+      '෦': '0', '෧': '1', '෨': '2', '෩': '3', '෪': '4',
+      '෫': '5', '෬': '6', '෭': '7', '෮': '8', '෯': '9'
+    };
+
+    const virama = '්';
+    
+    const scriptType = 'ie';
+
+    // Combine all character mappings for lookup
+    const allChars = {...vowels, ...consonants, ...vowelMarks, ...others};
+    
+    const isSinhalaChar = char => {
+        return Object.keys(allChars).includes(char) || 
+               char === ' ' || 
+               /[\u0D80-\u0DFF]/.test(char); // Unicode range for Sinhala
+    };
+
+    return processText(text, scriptType, isSinhalaChar, vowels, consonants, vowelMarks, others, virama);
 }
 
 function processText(text, scriptType, isScriptChar, vowels, consonants, vowelMarks, others, virama) {
