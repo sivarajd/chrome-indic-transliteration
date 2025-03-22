@@ -129,22 +129,26 @@ function transliterateDevanagari(text) {
     // Combine all character mappings for lookup
     const allChars = {...vowels, ...consonants, ...vowelMarks, ...others};
     
+    const isDevanagariChar = char => {
+        return Object.keys(allChars).includes(char) || 
+               char === ' ' || 
+               /[\u0900-\u097F]/.test(char); // Unicode range for Devanagari
+    };
+
+    return processText(text, isDevanagariChar, vowels, consonants, vowelMarks, others);
+}
+
+function processText(text, isScriptChar, vowels, consonants, vowelMarks, others) {
     // Find the word boundaries
     // Split text into words and non-word segments (like spaces, punctuation)
     const segments = [];
     let currentWord = '';
     let currentNonWord = '';
     
-    const isDevanagariChar = char => {
-      return Object.keys(allChars).includes(char) || 
-             char === ' ' || 
-             /[\u0900-\u097F]/.test(char); // Unicode range for Devanagari
-    };
-    
     for (let i = 0; i < text.length; i++) {
       const char = text[i];
       
-      if (isDevanagariChar(char) && char !== ' ' && char !== '\t' && char !== '\n') {
+      if (isScriptChar(char) && char !== ' ' && char !== '\t' && char !== '\n') {
         // If we had collected non-word chars, push them first
         if (currentNonWord) {
           segments.push({type: 'non-word', text: currentNonWord});
@@ -176,68 +180,68 @@ function transliterateDevanagari(text) {
       if (segment.type === 'non-word') {
         result += segment.text;
       } else {
-        result += transliterateIEWord(segment.text);
+        result += transliterateIEWord(segment.text, vowels, consonants, vowelMarks, others);
       }
     }
     
     return result;
+}
+
+// Function to transliterate a single IE word
+function transliterateIEWord(word, vowels, consonants, vowelMarks, others) {
+    if (word.length === 0) return '';
     
-    // Function to transliterate a single Devanagari word
-    function transliterateIEWord(word) {
-      if (word.length === 0) return '';
-      
-      let transliterated = '';
-      let i = 0;
-      
-      while (i < word.length) {
+    let transliterated = '';
+    let i = 0;
+    
+    while (i < word.length) {
         const char = word[i];
         const nextChar = i + 1 < word.length ? word[i + 1] : null;
         
         // Check for consonants
         if (consonants[char]) {
-          // If this is a standalone consonant (single character word)
-          if (word.length === 1) {
+        // If this is a standalone consonant (single character word)
+        if (word.length === 1) {
             transliterated += consonants[char] + 'a';
-          } 
-          // If this is the last character in the word
+        } 
+        // If this is the last character in the word
         //   else if (i === word.length - 1) {
         //     transliterated += consonants[char] + 'a';
         //   }
-          // If followed by a vowel mark or virama, don't add 'a'
-          else if (nextChar && (vowelMarks[nextChar] || nextChar === '्')) {
+        // If followed by a vowel mark or virama, don't add 'a'
+        else if (nextChar && (vowelMarks[nextChar] || nextChar === '्')) {
             transliterated += consonants[char];
-          }
-          // If followed by another consonant but no explicit virama
-          else if (nextChar && consonants[nextChar] && word[i+1] !== '्') {
+        }
+        // If followed by another consonant but no explicit virama
+        else if (nextChar && (consonants[nextChar] || others[nextChar]) && word[i+1] !== '्') {
             transliterated += consonants[char] + 'a';
-          }
-          // Otherwise, this is a consonant in the middle of a word, add base form
-          else {
+        }
+        // Otherwise, this is a consonant in the middle of a word, add base form
+        else {
             transliterated += consonants[char];
-          }
+        }
         }
         // Check for vowels at the beginning of word
         else if (vowels[char]) {
-          transliterated += vowels[char];
+        transliterated += vowels[char];
         }
         // Check for vowel marks
         else if (vowelMarks[char]) {
-          transliterated += vowelMarks[char];
+        transliterated += vowelMarks[char];
         }
         // Check for other characters
         else if (others[char]) {
-          transliterated += others[char];
+        transliterated += others[char];
         }
         // If not recognized, keep as is
         else {
-          transliterated += char;
+        transliterated += char;
         }
         
         i++;
-      }
-      
-      return transliterated;
     }
+    
+    return transliterated;
 }
 // Placeholder functions for other scripts
 // These would need proper implementation similar to the Devanagari function
