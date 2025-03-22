@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Indian Script Transliterator</title>
+  <style>
+    body {
+      width: 300px;
+      padding: 10px;
+      font-family: Arial, sans-serif;
+    }
+    .script-option {
+      margin: 8px 0;
+    }
+    button {
+      margin-top: 10px;
+      padding: 5px 10px;
+      background-color: #4285f4;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #3b78e7;
+    }
+    h1 {
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Indian Script Transliterator</h1>
+  <div class="script-option">
+    <input type="checkbox" id="devanagari" value="devanagari" checked>
+    <label for="devanagari">Devanagari (Hindi, Marathi, Sanskrit)</label>
+  </div>
+  <div class="script-option">
+    <input type="checkbox" id="bengali" value="bengali">
+    <label for="bengali">Bengali</label>
+  </div>
+  <div class="script-option">
+    <input type="checkbox" id="tamil" value="tamil">
+    <label for="tamil">Tamil</label>
+  </div>
+  <div class="script-option">
+    <input type="checkbox" id="telugu" value="telugu">
+    <label for="telugu">Telugu</label>
+  </div>
+  <div class="script-option">
+    <input type="checkbox" id="kannada" value="kannada">
+    <label for="kannada">Kannada</label>
+  </div>
+  <div class="script-option">
+    <input type="checkbox" id="malayalam" value="malayalam">
+    <label for="malayalam">Malayalam</label>
+  </div>
+  <div class="script-option">
+    <input type="checkbox" id="gurmukhi" value="gurmukhi">
+    <label for="gurmukhi">Gurmukhi (Punjabi)</label>
+  </div>
+  <div class="script-option">
+    <input type="checkbox" id="gujarati" value="gujarati">
+    <label for="gujarati">Gujarati</label>
+  </div>
+  <div class="script-option">
+    <input type="checkbox" id="odia" value="odia">
+    <label for="odia">Odia</label>
+  </div>
+  
+  <button id="transliterate">Transliterate Page</button>
+  <button id="reset">Reset Page</button>
+  
+  <script src="popup.js"></script>
+</body>
+</html>
