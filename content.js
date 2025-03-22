@@ -125,7 +125,11 @@ function transliterateDevanagari(text) {
       '५': '5', '६': '6', '७': '7', '८': '8', '९': '9',
       '।': '.'
     };
+
+    const virama = '्';
     
+    const scriptType = 'ie';
+
     // Combine all character mappings for lookup
     const allChars = {...vowels, ...consonants, ...vowelMarks, ...others};
     
@@ -135,10 +139,391 @@ function transliterateDevanagari(text) {
                /[\u0900-\u097F]/.test(char); // Unicode range for Devanagari
     };
 
-    return processText(text, isDevanagariChar, vowels, consonants, vowelMarks, others);
+    return processText(text, scriptType, isDevanagariChar, vowels, consonants, vowelMarks, others, virama);
 }
 
-function processText(text, isScriptChar, vowels, consonants, vowelMarks, others) {
+function transliterateBengali(text) {
+    // Define mapping from Bengali to ISO 15919
+    const vowels = {
+      'অ': 'a', 'আ': 'ā', 'ই': 'i', 'ঈ': 'ī', 'উ': 'u', 'ঊ': 'ū',
+      'এ': 'ē', 'ঐ': 'ai', 'ও': 'ō', 'ঔ': 'au', 'ঋ': 'r̥', 'ৠ': 'r̥̄',
+      'ঌ': 'l̥', 'ৡ': 'l̥̄'
+    };
+    
+    const consonants = {
+      'ক': 'k', 'খ': 'kh', 'গ': 'g', 'ঘ': 'gh', 'ঙ': 'ṅ',
+      'চ': 'c', 'ছ': 'ch', 'জ': 'j', 'ঝ': 'jh', 'ঞ': 'ñ',
+      'ট': 'ṭ', 'ঠ': 'ṭh', 'ড': 'ḍ', 'ঢ': 'ḍh', 'ণ': 'ṇ',
+      'ত': 't', 'থ': 'th', 'দ': 'd', 'ধ': 'dh', 'ন': 'n',
+      'প': 'p', 'ফ': 'ph', 'ব': 'b', 'ভ': 'bh', 'ম': 'm',
+      'য': 'y', 'র': 'r', 'ল': 'l', 'ব': 'v', 'শ': 'ś', 
+      'ষ': 'ṣ', 'স': 's', 'হ': 'h',
+      'ক্ষ': 'kṣ', 'ত্র': 'tr', 'জ্ঞ': 'jñ',
+      'ৎ': 't', 'ড়': 'ṛ', 'ঢ়': 'ṛh', 'য়': 'ẏ'
+    };
+    
+    const vowelMarks = {
+      'া': 'ā', 'ি': 'i', 'ী': 'ī', 'ু': 'u', 'ূ': 'ū',
+      'ে': 'ē', 'ৈ': 'ai', 'ো': 'ō', 'ৌ': 'au', 'ৃ': 'r̥', 'ৄ': 'r̥̄',
+      'ৢ': 'l̥', 'ৣ': 'l̥̄'
+    };
+    
+    const others = {
+      '্': '​', 'ং': 'ṁ', 'ঃ': 'ḥ', 'ঁ': 'ṃ',
+      '০': '0', '১': '1', '২': '2', '৩': '3', '৪': '4',
+      '৫': '5', '৬': '6', '৭': '7', '৮': '8', '৯': '9',
+      '।': '.'
+    };
+
+    const virama = '্';
+
+    const scriptType = 'ie';
+
+    // Combine all character mappings for lookup
+    const allChars = {...vowels, ...consonants, ...vowelMarks, ...others};
+    
+    const isBengaliChar = char => {
+        return Object.keys(allChars).includes(char) || 
+               char === ' ' || 
+               /[\u0980-\u09FF]/.test(char); // Unicode range for Bengali
+    };
+
+    return processText(text, scriptType, isBengaliChar, vowels, consonants, vowelMarks, others, virama);
+}
+
+function transliterateTamil(text) {
+    // Define mapping from Tamil to ISO 15919
+    const vowels = {
+      'அ': 'a', 'ஆ': 'ā', 'இ': 'i', 'ஈ': 'ī', 'உ': 'u', 'ஊ': 'ū',
+      'எ': 'e', 'ஏ': 'ē', 'ஐ': 'ai', 'ஒ': 'o', 'ஓ': 'ō', 'ஔ': 'au'
+    };
+    
+    const consonants = {
+      'க': 'k', 'ங': 'ṅ', 'ச': 'c', 'ஞ': 'ñ', 'ட': 'ṭ', 'ண': 'ṇ',
+      'த': 't', 'ந': 'n', 'ப': 'p', 'ம': 'm', 'ய': 'y', 'ர': 'r',
+      'ல': 'l', 'வ': 'v', 'ழ': 'ḻ', 'ள': 'ḷ', 'ற': 'ṟ', 'ன': 'ṉ',
+      'ஜ': 'j', 'ஷ': 'ṣ', 'ஸ': 's', 'ஹ': 'h', 'க்ஷ': 'kṣ'
+    };
+    
+    const vowelMarks = {
+      'ா': 'ā', 'ி': 'i', 'ீ': 'ī', 'ு': 'u', 'ூ': 'ū',
+      'ெ': 'e', 'ே': 'ē', 'ை': 'ai', 'ொ': 'o', 'ோ': 'ō', 'ௌ': 'au'
+    };
+    
+    const others = {
+      '்': '​', 'ஂ': 'ṁ', 'ஃ': 'ḥ',
+      '௦': '0', '௧': '1', '௨': '2', '௩': '3', '௪': '4',
+      '௫': '5', '௬': '6', '௭': '7', '௮': '8', '௯': '9',
+      '।': '.'
+    };
+
+    const virama = '்';
+    
+    const scriptType = 'dr';
+
+    // Combine all character mappings for lookup
+    const allChars = {...vowels, ...consonants, ...vowelMarks, ...others};
+    
+    const isTamilChar = char => {
+        return Object.keys(allChars).includes(char) || 
+               char === ' ' || 
+               /[\u0B80-\u0BFF]/.test(char); // Unicode range for Tamil
+    };
+
+    return processText(text, scriptType, isTamilChar, vowels, consonants, vowelMarks, others, virama);
+}
+
+function transliterateTelugu(text, script) {
+    // Define mapping from Telugu to ISO 15919
+    const vowels = {
+      'అ': 'a', 'ఆ': 'ā', 'ఇ': 'i', 'ఈ': 'ī', 'ఉ': 'u', 'ఊ': 'ū',
+      'ఋ': 'r̥', 'ౠ': 'r̥̄', 'ఌ': 'l̥', 'ౡ': 'l̥̄',
+      'ఎ': 'e', 'ఏ': 'ē', 'ఐ': 'ai', 'ఒ': 'o', 'ఓ': 'ō', 'ఔ': 'au'
+    };
+    
+    const consonants = {
+      'క': 'k', 'ఖ': 'kh', 'గ': 'g', 'ఘ': 'gh', 'ఙ': 'ṅ',
+      'చ': 'c', 'ఛ': 'ch', 'జ': 'j', 'ఝ': 'jh', 'ఞ': 'ñ',
+      'ట': 'ṭ', 'ఠ': 'ṭh', 'డ': 'ḍ', 'ఢ': 'ḍh', 'ణ': 'ṇ',
+      'త': 't', 'థ': 'th', 'ద': 'd', 'ధ': 'dh', 'న': 'n',
+      'ప': 'p', 'ఫ': 'ph', 'బ': 'b', 'భ': 'bh', 'మ': 'm',
+      'య': 'y', 'ర': 'r', 'ల': 'l', 'వ': 'v', 'శ': 'ś', 
+      'ష': 'ṣ', 'స': 's', 'హ': 'h',
+      'క్ష': 'kṣ', 'త్ర': 'tr', 'జ్ఞ': 'jñ',
+      'ళ': 'ḷ', 'ఱ': 'ṟ'
+    };
+    
+    const vowelMarks = {
+      'ా': 'ā', 'ి': 'i', 'ీ': 'ī', 'ు': 'u', 'ూ': 'ū',
+      'ృ': 'r̥', 'ౄ': 'r̥̄', 'ౢ': 'l̥', 'ౣ': 'l̥̄',
+      'ె': 'e', 'ే': 'ē', 'ై': 'ai', 'ొ': 'o', 'ో': 'ō', 'ౌ': 'au'
+    };
+    
+    const others = {
+      '్': '​', 'ం': 'ṁ', 'ః': 'ḥ',
+      '౦': '0', '౧': '1', '౨': '2', '౩': '3', '౪': '4',
+      '౫': '5', '౬': '6', '౭': '7', '౮': '8', '౯': '9',
+      '।': '.'
+    };
+
+    const virama = '్';
+    
+    const scriptType = 'dr';
+
+    // Combine all character mappings for lookup
+    const allChars = {...vowels, ...consonants, ...vowelMarks, ...others};
+    
+    const isTeluguChar = char => {
+        return Object.keys(allChars).includes(char) || 
+               char === ' ' || 
+               /[\u0C00-\u0C7F]/.test(char); // Unicode range for Telugu
+    };
+
+    return processText(text, scriptType, isTeluguChar, vowels, consonants, vowelMarks, others, virama);
+}
+
+function transliterateKannada(text, script) {
+    // Define mapping from Kannada to ISO 15919
+    const vowels = {
+      'ಅ': 'a', 'ಆ': 'ā', 'ಇ': 'i', 'ಈ': 'ī', 'ಉ': 'u', 'ಊ': 'ū',
+      'ಋ': 'r̥', 'ೠ': 'r̥̄', 'ಌ': 'l̥', 'ೡ': 'l̥̄',
+      'ಎ': 'e', 'ಏ': 'ē', 'ಐ': 'ai', 'ಒ': 'o', 'ಓ': 'ō', 'ಔ': 'au'
+    };
+    
+    const consonants = {
+      'ಕ': 'k', 'ಖ': 'kh', 'ಗ': 'g', 'ಘ': 'gh', 'ಙ': 'ṅ',
+      'ಚ': 'c', 'ಛ': 'ch', 'ಜ': 'j', 'ಝ': 'jh', 'ಞ': 'ñ',
+      'ಟ': 'ṭ', 'ಠ': 'ṭh', 'ಡ': 'ḍ', 'ಢ': 'ḍh', 'ಣ': 'ṇ',
+      'ತ': 't', 'ಥ': 'th', 'ದ': 'd', 'ಧ': 'dh', 'ನ': 'n',
+      'ಪ': 'p', 'ಫ': 'ph', 'ಬ': 'b', 'ಭ': 'bh', 'ಮ': 'm',
+      'ಯ': 'y', 'ರ': 'r', 'ಲ': 'l', 'ವ': 'v', 'ಶ': 'ś', 
+      'ಷ': 'ṣ', 'ಸ': 's', 'ಹ': 'h',
+      'ಕ್ಷ': 'kṣ', 'ತ್ರ': 'tr', 'ಜ್ಞ': 'jñ',
+      'ಳ': 'ḷ', 'ೞ': 'ḻ'
+    };
+    
+    const vowelMarks = {
+      'ಾ': 'ā', 'ಿ': 'i', 'ೀ': 'ī', 'ು': 'u', 'ೂ': 'ū',
+      'ೃ': 'r̥', 'ೄ': 'r̥̄', 'ೢ': 'l̥', 'ೣ': 'l̥̄',
+      'ೆ': 'e', 'ೇ': 'ē', 'ೈ': 'ai', 'ೊ': 'o', 'ೋ': 'ō', 'ೌ': 'au'
+    };
+    
+    const others = {
+      '್': '​', 'ಂ': 'ṁ', 'ಃ': 'ḥ',
+      '೦': '0', '೧': '1', '೨': '2', '೩': '3', '೪': '4',
+      '೫': '5', '೬': '6', '೭': '7', '೮': '8', '೯': '9',
+      '।': '.'
+    };
+
+    const virama = '್';
+    
+    const scriptType = 'dr';
+
+    // Combine all character mappings for lookup
+    const allChars = {...vowels, ...consonants, ...vowelMarks, ...others};
+    
+    const isKannadaChar = char => {
+        return Object.keys(allChars).includes(char) || 
+               char === ' ' || 
+               /[\u0C80-\u0CFF]/.test(char); // Unicode range for Kannada
+    };
+
+    return processText(text, scriptType, isKannadaChar, vowels, consonants, vowelMarks, others, virama);
+}
+
+function transliterateMalayalam(text) {
+    // Define mapping from Malayalam to ISO 15919
+    const vowels = {
+      'അ': 'a', 'ആ': 'ā', 'ഇ': 'i', 'ഈ': 'ī', 'ഉ': 'u', 'ഊ': 'ū',
+      'ഋ': 'r̥', 'ൠ': 'r̥̄', 'ഌ': 'l̥', 'ൡ': 'l̥̄',
+      'എ': 'e', 'ഏ': 'ē', 'ഐ': 'ai', 'ഒ': 'o', 'ഓ': 'ō', 'ഔ': 'au'
+    };
+    
+    const consonants = {
+      'ക': 'k', 'ഖ': 'kh', 'ഗ': 'g', 'ഘ': 'gh', 'ങ': 'ṅ',
+      'ച': 'c', 'ഛ': 'ch', 'ജ': 'j', 'ഝ': 'jh', 'ഞ': 'ñ',
+      'ട': 'ṭ', 'ഠ': 'ṭh', 'ഡ': 'ḍ', 'ഢ': 'ḍh', 'ണ': 'ṇ',
+      'ത': 't', 'ഥ': 'th', 'ദ': 'd', 'ധ': 'dh', 'ന': 'n',
+      'പ': 'p', 'ഫ': 'ph', 'ബ': 'b', 'ഭ': 'bh', 'മ': 'm',
+      'യ': 'y', 'ര': 'r', 'ല': 'l', 'വ': 'v', 'ശ': 'ś', 
+      'ഷ': 'ṣ', 'സ': 's', 'ഹ': 'h',
+      'ക്ഷ': 'kṣ', 'ത്ര': 'tr', 'ജ്ഞ': 'jñ',
+      'ള': 'ḷ', 'ഴ': 'ḻ', 'റ': 'ṟ'
+    };
+    
+    const vowelMarks = {
+      'ാ': 'ā', 'ി': 'i', 'ീ': 'ī', 'ു': 'u', 'ൂ': 'ū',
+      'ൃ': 'r̥', 'ൄ': 'r̥̄', 'ൢ': 'l̥', 'ൣ': 'l̥̄',
+      'െ': 'e', 'േ': 'ē', 'ൈ': 'ai', 'ൊ': 'o', 'ോ': 'ō', 'ൌ': 'au'
+    };
+    
+    const others = {
+      '്': '​', 'ം': 'ṁ', 'ഃ': 'ḥ',
+      '൦': '0', '൧': '1', '൨': '2', '൩': '3', '൪': '4',
+      '൫': '5', '൬': '6', '൭': '7', '൮': '8', '൯': '9',
+      '।': '.'
+    };
+
+    const virama = '്';
+    
+    const scriptType = 'dr';
+
+    // Combine all character mappings for lookup
+    const allChars = {...vowels, ...consonants, ...vowelMarks, ...others};
+    
+    const isMalayalamChar = char => {
+        return Object.keys(allChars).includes(char) || 
+               char === ' ' || 
+               /[\u0D00-\u0D7F]/.test(char); // Unicode range for Malayalam
+    };
+
+    return processText(text, scriptType, isMalayalamChar, vowels, consonants, vowelMarks, others, virama);
+}
+
+function transliterateGurmukhi(text) {
+    // Define mapping from Gurmukhi to ISO 15919
+    const vowels = {
+      'ਅ': 'a', 'ਆ': 'ā', 'ਇ': 'i', 'ਈ': 'ī', 'ਉ': 'u', 'ਊ': 'ū',
+      'ਏ': 'ē', 'ਐ': 'ai', 'ਓ': 'ō', 'ਔ': 'au'
+    };
+    
+    const consonants = {
+      'ਕ': 'k', 'ਖ': 'kh', 'ਗ': 'g', 'ਘ': 'gh', 'ਙ': 'ṅ',
+      'ਚ': 'c', 'ਛ': 'ch', 'ਜ': 'j', 'ਝ': 'jh', 'ਞ': 'ñ',
+      'ਟ': 'ṭ', 'ਠ': 'ṭh', 'ਡ': 'ḍ', 'ਢ': 'ḍh', 'ਣ': 'ṇ',
+      'ਤ': 't', 'ਥ': 'th', 'ਦ': 'd', 'ਧ': 'dh', 'ਨ': 'n',
+      'ਪ': 'p', 'ਫ': 'ph', 'ਬ': 'b', 'ਭ': 'bh', 'ਮ': 'm',
+      'ਯ': 'y', 'ਰ': 'r', 'ਲ': 'l', 'ਵ': 'v', 'ਸ਼': 'ś', 
+      'ਸ': 's', 'ਹ': 'h',
+      'ਖ਼': 'kh', 'ਗ਼': 'g', 'ਜ਼': 'z', 'ਫ਼': 'f', 'ੜ': 'ṛ'
+    };
+    
+    const vowelMarks = {
+      'ਾ': 'ā', 'ਿ': 'i', 'ੀ': 'ī', 'ੁ': 'u', 'ੂ': 'ū',
+      'ੇ': 'ē', 'ੈ': 'ai', 'ੋ': 'ō', 'ੌ': 'au'
+    };
+    
+    const others = {
+      '੍': '​', 'ਂ': 'ṃ', 'ੰ': 'ṁ', 'ਃ': 'ḥ',
+      '੦': '0', '੧': '1', '੨': '2', '੩': '3', '੪': '4',
+      '੫': '5', '੬': '6', '੭': '7', '੮': '8', '੯': '9',
+      '।': '.'
+    };
+
+    const virama = '੍';
+    
+    const scriptType = 'ie';
+
+    // Combine all character mappings for lookup
+    const allChars = {...vowels, ...consonants, ...vowelMarks, ...others};
+    
+    const isGurmukhiChar = char => {
+        return Object.keys(allChars).includes(char) || 
+               char === ' ' || 
+               /[\u0A00-\u0A7F]/.test(char); // Unicode range for Gurmukhi
+    };
+
+    return processText(text, scriptType, isGurmukhiChar, vowels, consonants, vowelMarks, others, virama);
+}
+
+function transliterateGujarati(text) {
+    // Define mapping from Gujarati to ISO 15919
+    const vowels = {
+      'અ': 'a', 'આ': 'ā', 'ઇ': 'i', 'ઈ': 'ī', 'ઉ': 'u', 'ઊ': 'ū',
+      'એ': 'ē', 'ઐ': 'ai', 'ઓ': 'ō', 'ઔ': 'au', 'ઋ': 'r̥', 'ૠ': 'r̥̄',
+      'ઌ': 'l̥', 'ૡ': 'l̥̄'
+    };
+    
+    const consonants = {
+      'ક': 'k', 'ખ': 'kh', 'ગ': 'g', 'ઘ': 'gh', 'ઙ': 'ṅ',
+      'ચ': 'c', 'છ': 'ch', 'જ': 'j', 'ઝ': 'jh', 'ઞ': 'ñ',
+      'ટ': 'ṭ', 'ઠ': 'ṭh', 'ડ': 'ḍ', 'ઢ': 'ḍh', 'ણ': 'ṇ',
+      'ત': 't', 'થ': 'th', 'દ': 'd', 'ધ': 'dh', 'ન': 'n',
+      'પ': 'p', 'ફ': 'ph', 'બ': 'b', 'ભ': 'bh', 'મ': 'm',
+      'ય': 'y', 'ર': 'r', 'લ': 'l', 'વ': 'v', 'શ': 'ś', 
+      'ષ': 'ṣ', 'સ': 's', 'હ': 'h',
+      'ક્ષ': 'kṣ', 'ત્ર': 'tr', 'જ્ઞ': 'jñ'
+    };
+    
+    const vowelMarks = {
+      'ા': 'ā', 'િ': 'i', 'ી': 'ī', 'ુ': 'u', 'ૂ': 'ū',
+      'ે': 'ē', 'ૈ': 'ai', 'ો': 'ō', 'ૌ': 'au', 'ૃ': 'r̥', 'ૄ': 'r̥̄',
+      'ૢ': 'l̥', 'ૣ': 'l̥̄'
+    };
+    
+    const others = {
+      '્': '​', 'ં': 'ṁ', 'ઃ': 'ḥ', 'ઁ': 'ṃ',
+      '૦': '0', '૧': '1', '૨': '2', '૩': '3', '૪': '4',
+      '૫': '5', '૬': '6', '૭': '7', '૮': '8', '૯': '9',
+      '।': '.'
+    };
+
+    const virama = '્';
+    
+    const scriptType = 'ie';
+
+    // Combine all character mappings for lookup
+    const allChars = {...vowels, ...consonants, ...vowelMarks, ...others};
+    
+    const isGujaratiChar = char => {
+        return Object.keys(allChars).includes(char) || 
+               char === ' ' || 
+               /[\u0A80-\u0AFF]/.test(char); // Unicode range for Gujarati
+    };
+
+    return processText(text, scriptType, isGujaratiChar, vowels, consonants, vowelMarks, others, virama);
+}
+
+function transliterateOdia(text) {
+    // Define mapping from Odia to ISO 15919
+    const vowels = {
+      'ଅ': 'a', 'ଆ': 'ā', 'ଇ': 'i', 'ଈ': 'ī', 'ଉ': 'u', 'ଊ': 'ū',
+      'ଏ': 'ē', 'ଐ': 'ai', 'ଓ': 'ō', 'ଔ': 'au', 'ଋ': 'r̥', 'ୠ': 'r̥̄',
+      'ଌ': 'l̥', 'ୡ': 'l̥̄'
+    };
+    
+    const consonants = {
+      'କ': 'k', 'ଖ': 'kh', 'ଗ': 'g', 'ଘ': 'gh', 'ଙ': 'ṅ',
+      'ଚ': 'c', 'ଛ': 'ch', 'ଜ': 'j', 'ଝ': 'jh', 'ଞ': 'ñ',
+      'ଟ': 'ṭ', 'ଠ': 'ṭh', 'ଡ': 'ḍ', 'ଢ': 'ḍh', 'ଣ': 'ṇ',
+      'ତ': 't', 'ଥ': 'th', 'ଦ': 'd', 'ଧ': 'dh', 'ନ': 'n',
+      'ପ': 'p', 'ଫ': 'ph', 'ବ': 'b', 'ଭ': 'bh', 'ମ': 'm',
+      'ଯ': 'y', 'ର': 'r', 'ଲ': 'l', 'ୱ': 'v', 'ଶ': 'ś', 
+      'ଷ': 'ṣ', 'ସ': 's', 'ହ': 'h',
+      'କ୍ଷ': 'kṣ', 'ତ୍ର': 'tr', 'ଜ୍ଞ': 'jñ',
+      'ଡ଼': 'ṛ', 'ଢ଼': 'ṛh'
+    };
+    
+    const vowelMarks = {
+      'ା': 'ā', 'ି': 'i', 'ୀ': 'ī', 'ୁ': 'u', 'ୂ': 'ū',
+      'େ': 'ē', 'ୈ': 'ai', 'ୋ': 'ō', 'ୌ': 'au', 'ୃ': 'r̥', 'ୄ': 'r̥̄',
+      'ୢ': 'l̥', 'ୣ': 'l̥̄'
+    };
+    
+    const others = {
+      '୍': '​', 'ଂ': 'ṁ', 'ଃ': 'ḥ', 'ଁ': 'ṃ',
+      '୦': '0', '୧': '1', '୨': '2', '୩': '3', '୪': '4',
+      '୫': '5', '୬': '6', '୭': '7', '୮': '8', '୯': '9',
+      '।': '.'
+    };
+
+    const virama = '୍';
+    
+    const scriptType = 'ie';
+
+    // Combine all character mappings for lookup
+    const allChars = {...vowels, ...consonants, ...vowelMarks, ...others};
+    
+    const isOdiaChar = char => {
+        return Object.keys(allChars).includes(char) || 
+               char === ' ' || 
+               /[\u0B00-\u0B7F]/.test(char); // Unicode range for Odia
+    };
+
+    return processText(text, scriptType, isOdiaChar, vowels, consonants, vowelMarks, others, virama);
+}
+
+function processText(text, scriptType, isScriptChar, vowels, consonants, vowelMarks, others, virama) {
     // Find the word boundaries
     // Split text into words and non-word segments (like spaces, punctuation)
     const segments = [];
@@ -180,7 +565,7 @@ function processText(text, isScriptChar, vowels, consonants, vowelMarks, others)
       if (segment.type === 'non-word') {
         result += segment.text;
       } else {
-        result += transliterateIEWord(segment.text, vowels, consonants, vowelMarks, others);
+        result += transliterateWord(segment.text, scriptType, vowels, consonants, vowelMarks, others, virama);
       }
     }
     
@@ -188,7 +573,7 @@ function processText(text, isScriptChar, vowels, consonants, vowelMarks, others)
 }
 
 // Function to transliterate a single IE word
-function transliterateIEWord(word, vowels, consonants, vowelMarks, others) {
+function transliterateWord(word, scriptType, vowels, consonants, vowelMarks, others, virama) {
     if (word.length === 0) return '';
     
     let transliterated = '';
@@ -205,15 +590,17 @@ function transliterateIEWord(word, vowels, consonants, vowelMarks, others) {
             transliterated += consonants[char] + 'a';
         } 
         // If this is the last character in the word
-        //   else if (i === word.length - 1) {
-        //     transliterated += consonants[char] + 'a';
-        //   }
+        else if (i === word.length - 1) {
+            if (scriptType === 'dr') {
+                transliterated += consonants[char] + 'a';
+            }
+        }
         // If followed by a vowel mark or virama, don't add 'a'
-        else if (nextChar && (vowelMarks[nextChar] || nextChar === '्')) {
+        else if (nextChar && (vowelMarks[nextChar] || nextChar === virama)) {
             transliterated += consonants[char];
         }
         // If followed by another consonant but no explicit virama
-        else if (nextChar && (consonants[nextChar] || others[nextChar]) && word[i+1] !== '्') {
+        else if (nextChar && (consonants[nextChar] || others[nextChar]) && word[i+1] !== virama) {
             transliterated += consonants[char] + 'a';
         }
         // Otherwise, this is a consonant in the middle of a word, add base form
@@ -242,200 +629,4 @@ function transliterateIEWord(word, vowels, consonants, vowelMarks, others) {
     }
     
     return transliterated;
-}
-
-function transliterateBengali(text) {
-    // Define mapping from Bengali to ISO 15919
-    const vowels = {
-      'অ': 'a', 'আ': 'ā', 'ই': 'i', 'ঈ': 'ī', 'উ': 'u', 'ঊ': 'ū',
-      'এ': 'ē', 'ঐ': 'ai', 'ও': 'ō', 'ঔ': 'au', 'ঋ': 'r̥', 'ৠ': 'r̥̄',
-      'ঌ': 'l̥', 'ৡ': 'l̥̄'
-    };
-    
-    const consonants = {
-      'ক': 'k', 'খ': 'kh', 'গ': 'g', 'ঘ': 'gh', 'ঙ': 'ṅ',
-      'চ': 'c', 'ছ': 'ch', 'জ': 'j', 'ঝ': 'jh', 'ঞ': 'ñ',
-      'ট': 'ṭ', 'ঠ': 'ṭh', 'ড': 'ḍ', 'ঢ': 'ḍh', 'ণ': 'ṇ',
-      'ত': 't', 'থ': 'th', 'দ': 'd', 'ধ': 'dh', 'ন': 'n',
-      'প': 'p', 'ফ': 'ph', 'ব': 'b', 'ভ': 'bh', 'ম': 'm',
-      'য': 'y', 'র': 'r', 'ল': 'l', 'ব': 'v', 'শ': 'ś', 
-      'ষ': 'ṣ', 'স': 's', 'হ': 'h',
-      'ক্ষ': 'kṣ', 'ত্র': 'tr', 'জ্ঞ': 'jñ',
-      'ৎ': 't', 'ড়': 'ṛ', 'ঢ়': 'ṛh', 'য়': 'ẏ'
-    };
-    
-    const vowelMarks = {
-      'া': 'ā', 'ি': 'i', 'ী': 'ī', 'ু': 'u', 'ূ': 'ū',
-      'ে': 'ē', 'ৈ': 'ai', 'ো': 'ō', 'ৌ': 'au', 'ৃ': 'r̥', 'ৄ': 'r̥̄',
-      'ৢ': 'l̥', 'ৣ': 'l̥̄'
-    };
-    
-    const others = {
-      '্': '​', 'ং': 'ṁ', 'ঃ': 'ḥ', 'ঁ': 'ṃ',
-      '০': '0', '১': '1', '২': '2', '৩': '3', '৪': '4',
-      '৫': '5', '৬': '6', '৭': '7', '৮': '8', '৯': '9',
-      '।': '.'
-    };
-    
-    // Combine all character mappings for lookup
-    const allChars = {...vowels, ...consonants, ...vowelMarks, ...others};
-    
-    const isBengaliChar = char => {
-        return Object.keys(allChars).includes(char) || 
-               char === ' ' || 
-               /[\u0980-\u09FF]/.test(char); // Unicode range for Bengali
-    };
-
-    return processText(text, isBengaliChar, vowels, consonants, vowelMarks, others);
-}
-
-function transliterateTamil(text) {
-  // Tamil to ISO 15919 mapping would go here
-  return text; // Placeholder
-}
-
-function transliterateTelugu(text, script) {
-  // Telugu/Kannada to ISO 15919 mapping would go here
-  return text; // Placeholder
-}
-
-function transliterateKannada(text, script) {
-    // Telugu/Kannada to ISO 15919 mapping would go here
-    return text; // Placeholder
-  }
-  
-  function transliterateMalayalam(text) {
-  // Malayalam to ISO 15919 mapping would go here
-  return text; // Placeholder
-}
-
-function transliterateGurmukhi(text) {
-    // Define mapping from Gurmukhi to ISO 15919
-    const vowels = {
-      'ਅ': 'a', 'ਆ': 'ā', 'ਇ': 'i', 'ਈ': 'ī', 'ਉ': 'u', 'ਊ': 'ū',
-      'ਏ': 'ē', 'ਐ': 'ai', 'ਓ': 'ō', 'ਔ': 'au'
-    };
-    
-    const consonants = {
-      'ਕ': 'k', 'ਖ': 'kh', 'ਗ': 'g', 'ਘ': 'gh', 'ਙ': 'ṅ',
-      'ਚ': 'c', 'ਛ': 'ch', 'ਜ': 'j', 'ਝ': 'jh', 'ਞ': 'ñ',
-      'ਟ': 'ṭ', 'ਠ': 'ṭh', 'ਡ': 'ḍ', 'ਢ': 'ḍh', 'ਣ': 'ṇ',
-      'ਤ': 't', 'ਥ': 'th', 'ਦ': 'd', 'ਧ': 'dh', 'ਨ': 'n',
-      'ਪ': 'p', 'ਫ': 'ph', 'ਬ': 'b', 'ਭ': 'bh', 'ਮ': 'm',
-      'ਯ': 'y', 'ਰ': 'r', 'ਲ': 'l', 'ਵ': 'v', 'ਸ਼': 'ś', 
-      'ਸ': 's', 'ਹ': 'h',
-      'ਖ਼': 'kh', 'ਗ਼': 'g', 'ਜ਼': 'z', 'ਫ਼': 'f', 'ੜ': 'ṛ'
-    };
-    
-    const vowelMarks = {
-      'ਾ': 'ā', 'ਿ': 'i', 'ੀ': 'ī', 'ੁ': 'u', 'ੂ': 'ū',
-      'ੇ': 'ē', 'ੈ': 'ai', 'ੋ': 'ō', 'ੌ': 'au'
-    };
-    
-    const others = {
-      '੍': '​', 'ਂ': 'ṃ', 'ੰ': 'ṁ', 'ਃ': 'ḥ',
-      '੦': '0', '੧': '1', '੨': '2', '੩': '3', '੪': '4',
-      '੫': '5', '੬': '6', '੭': '7', '੮': '8', '੯': '9',
-      '।': '.'
-    };
-    
-    // Combine all character mappings for lookup
-    const allChars = {...vowels, ...consonants, ...vowelMarks, ...others};
-    
-    const isGurmukhiChar = char => {
-        return Object.keys(allChars).includes(char) || 
-               char === ' ' || 
-               /[\u0A00-\u0A7F]/.test(char); // Unicode range for Gurmukhi
-    };
-
-    return processText(text, isGurmukhiChar, vowels, consonants, vowelMarks, others);
-}
-
-function transliterateGujarati(text) {
-    // Define mapping from Gujarati to ISO 15919
-    const vowels = {
-      'અ': 'a', 'આ': 'ā', 'ઇ': 'i', 'ઈ': 'ī', 'ઉ': 'u', 'ઊ': 'ū',
-      'એ': 'ē', 'ઐ': 'ai', 'ઓ': 'ō', 'ઔ': 'au', 'ઋ': 'r̥', 'ૠ': 'r̥̄',
-      'ઌ': 'l̥', 'ૡ': 'l̥̄'
-    };
-    
-    const consonants = {
-      'ક': 'k', 'ખ': 'kh', 'ગ': 'g', 'ઘ': 'gh', 'ઙ': 'ṅ',
-      'ચ': 'c', 'છ': 'ch', 'જ': 'j', 'ઝ': 'jh', 'ઞ': 'ñ',
-      'ટ': 'ṭ', 'ઠ': 'ṭh', 'ડ': 'ḍ', 'ઢ': 'ḍh', 'ણ': 'ṇ',
-      'ત': 't', 'થ': 'th', 'દ': 'd', 'ધ': 'dh', 'ન': 'n',
-      'પ': 'p', 'ફ': 'ph', 'બ': 'b', 'ભ': 'bh', 'મ': 'm',
-      'ય': 'y', 'ર': 'r', 'લ': 'l', 'વ': 'v', 'શ': 'ś', 
-      'ષ': 'ṣ', 'સ': 's', 'હ': 'h',
-      'ક્ષ': 'kṣ', 'ત્ર': 'tr', 'જ્ઞ': 'jñ'
-    };
-    
-    const vowelMarks = {
-      'ા': 'ā', 'િ': 'i', 'ી': 'ī', 'ુ': 'u', 'ૂ': 'ū',
-      'ે': 'ē', 'ૈ': 'ai', 'ો': 'ō', 'ૌ': 'au', 'ૃ': 'r̥', 'ૄ': 'r̥̄',
-      'ૢ': 'l̥', 'ૣ': 'l̥̄'
-    };
-    
-    const others = {
-      '્': '​', 'ં': 'ṁ', 'ઃ': 'ḥ', 'ઁ': 'ṃ',
-      '૦': '0', '૧': '1', '૨': '2', '૩': '3', '૪': '4',
-      '૫': '5', '૬': '6', '૭': '7', '૮': '8', '૯': '9',
-      '।': '.'
-    };
-    
-    // Combine all character mappings for lookup
-    const allChars = {...vowels, ...consonants, ...vowelMarks, ...others};
-    
-    const isGujaratiChar = char => {
-        return Object.keys(allChars).includes(char) || 
-               char === ' ' || 
-               /[\u0A80-\u0AFF]/.test(char); // Unicode range for Gujarati
-    };
-
-    return processText(text, isGujaratiChar, vowels, consonants, vowelMarks, others);
-}
-
-function transliterateOdia(text) {
-    // Define mapping from Odia to ISO 15919
-    const vowels = {
-      'ଅ': 'a', 'ଆ': 'ā', 'ଇ': 'i', 'ଈ': 'ī', 'ଉ': 'u', 'ଊ': 'ū',
-      'ଏ': 'ē', 'ଐ': 'ai', 'ଓ': 'ō', 'ଔ': 'au', 'ଋ': 'r̥', 'ୠ': 'r̥̄',
-      'ଌ': 'l̥', 'ୡ': 'l̥̄'
-    };
-    
-    const consonants = {
-      'କ': 'k', 'ଖ': 'kh', 'ଗ': 'g', 'ଘ': 'gh', 'ଙ': 'ṅ',
-      'ଚ': 'c', 'ଛ': 'ch', 'ଜ': 'j', 'ଝ': 'jh', 'ଞ': 'ñ',
-      'ଟ': 'ṭ', 'ଠ': 'ṭh', 'ଡ': 'ḍ', 'ଢ': 'ḍh', 'ଣ': 'ṇ',
-      'ତ': 't', 'ଥ': 'th', 'ଦ': 'd', 'ଧ': 'dh', 'ନ': 'n',
-      'ପ': 'p', 'ଫ': 'ph', 'ବ': 'b', 'ଭ': 'bh', 'ମ': 'm',
-      'ଯ': 'y', 'ର': 'r', 'ଲ': 'l', 'ୱ': 'v', 'ଶ': 'ś', 
-      'ଷ': 'ṣ', 'ସ': 's', 'ହ': 'h',
-      'କ୍ଷ': 'kṣ', 'ତ୍ର': 'tr', 'ଜ୍ଞ': 'jñ',
-      'ଡ଼': 'ṛ', 'ଢ଼': 'ṛh'
-    };
-    
-    const vowelMarks = {
-      'ା': 'ā', 'ି': 'i', 'ୀ': 'ī', 'ୁ': 'u', 'ୂ': 'ū',
-      'େ': 'ē', 'ୈ': 'ai', 'ୋ': 'ō', 'ୌ': 'au', 'ୃ': 'r̥', 'ୄ': 'r̥̄',
-      'ୢ': 'l̥', 'ୣ': 'l̥̄'
-    };
-    
-    const others = {
-      '୍': '​', 'ଂ': 'ṁ', 'ଃ': 'ḥ', 'ଁ': 'ṃ',
-      '୦': '0', '୧': '1', '୨': '2', '୩': '3', '୪': '4',
-      '୫': '5', '୬': '6', '୭': '7', '୮': '8', '୯': '9',
-      '।': '.'
-    };
-    
-    // Combine all character mappings for lookup
-    const allChars = {...vowels, ...consonants, ...vowelMarks, ...others};
-    
-    const isOdiaChar = char => {
-        return Object.keys(allChars).includes(char) || 
-               char === ' ' || 
-               /[\u0B00-\u0B7F]/.test(char); // Unicode range for Odia
-    };
-
-    return processText(text, isOdiaChar, vowels, consonants, vowelMarks, others);
 }
