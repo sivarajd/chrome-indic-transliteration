@@ -243,11 +243,50 @@ function transliterateIEWord(word, vowels, consonants, vowelMarks, others) {
     
     return transliterated;
 }
-// Placeholder functions for other scripts
-// These would need proper implementation similar to the Devanagari function
+
 function transliterateBengali(text) {
-  // Bengali to ISO 15919 mapping would go here
-  return text; // Placeholder
+    // Define mapping from Bengali to ISO 15919
+    const vowels = {
+      'অ': 'a', 'আ': 'ā', 'ই': 'i', 'ঈ': 'ī', 'উ': 'u', 'ঊ': 'ū',
+      'এ': 'ē', 'ঐ': 'ai', 'ও': 'ō', 'ঔ': 'au', 'ঋ': 'r̥', 'ৠ': 'r̥̄',
+      'ঌ': 'l̥', 'ৡ': 'l̥̄'
+    };
+    
+    const consonants = {
+      'ক': 'k', 'খ': 'kh', 'গ': 'g', 'ঘ': 'gh', 'ঙ': 'ṅ',
+      'চ': 'c', 'ছ': 'ch', 'জ': 'j', 'ঝ': 'jh', 'ঞ': 'ñ',
+      'ট': 'ṭ', 'ঠ': 'ṭh', 'ড': 'ḍ', 'ঢ': 'ḍh', 'ণ': 'ṇ',
+      'ত': 't', 'থ': 'th', 'দ': 'd', 'ধ': 'dh', 'ন': 'n',
+      'প': 'p', 'ফ': 'ph', 'ব': 'b', 'ভ': 'bh', 'ম': 'm',
+      'য': 'y', 'র': 'r', 'ল': 'l', 'ব': 'v', 'শ': 'ś', 
+      'ষ': 'ṣ', 'স': 's', 'হ': 'h',
+      'ক্ষ': 'kṣ', 'ত্র': 'tr', 'জ্ঞ': 'jñ',
+      'ৎ': 't', 'ড়': 'ṛ', 'ঢ়': 'ṛh', 'য়': 'ẏ'
+    };
+    
+    const vowelMarks = {
+      'া': 'ā', 'ি': 'i', 'ী': 'ī', 'ু': 'u', 'ূ': 'ū',
+      'ে': 'ē', 'ৈ': 'ai', 'ো': 'ō', 'ৌ': 'au', 'ৃ': 'r̥', 'ৄ': 'r̥̄',
+      'ৢ': 'l̥', 'ৣ': 'l̥̄'
+    };
+    
+    const others = {
+      '্': '​', 'ং': 'ṁ', 'ঃ': 'ḥ', 'ঁ': 'ṃ',
+      '০': '0', '১': '1', '২': '2', '৩': '3', '৪': '4',
+      '৫': '5', '৬': '6', '৭': '7', '৮': '8', '৯': '9',
+      '।': '.'
+    };
+    
+    // Combine all character mappings for lookup
+    const allChars = {...vowels, ...consonants, ...vowelMarks, ...others};
+    
+    const isBengaliChar = char => {
+        return Object.keys(allChars).includes(char) || 
+               char === ' ' || 
+               /[\u0980-\u09FF]/.test(char); // Unicode range for Bengali
+    };
+
+    return processText(text, isBengaliChar, vowels, consonants, vowelMarks, others);
 }
 
 function transliterateTamil(text) {
@@ -271,16 +310,132 @@ function transliterateKannada(text, script) {
 }
 
 function transliterateGurmukhi(text) {
-  // Gurmukhi to ISO 15919 mapping would go here
-  return text; // Placeholder
+    // Define mapping from Gurmukhi to ISO 15919
+    const vowels = {
+      'ਅ': 'a', 'ਆ': 'ā', 'ਇ': 'i', 'ਈ': 'ī', 'ਉ': 'u', 'ਊ': 'ū',
+      'ਏ': 'ē', 'ਐ': 'ai', 'ਓ': 'ō', 'ਔ': 'au'
+    };
+    
+    const consonants = {
+      'ਕ': 'k', 'ਖ': 'kh', 'ਗ': 'g', 'ਘ': 'gh', 'ਙ': 'ṅ',
+      'ਚ': 'c', 'ਛ': 'ch', 'ਜ': 'j', 'ਝ': 'jh', 'ਞ': 'ñ',
+      'ਟ': 'ṭ', 'ਠ': 'ṭh', 'ਡ': 'ḍ', 'ਢ': 'ḍh', 'ਣ': 'ṇ',
+      'ਤ': 't', 'ਥ': 'th', 'ਦ': 'd', 'ਧ': 'dh', 'ਨ': 'n',
+      'ਪ': 'p', 'ਫ': 'ph', 'ਬ': 'b', 'ਭ': 'bh', 'ਮ': 'm',
+      'ਯ': 'y', 'ਰ': 'r', 'ਲ': 'l', 'ਵ': 'v', 'ਸ਼': 'ś', 
+      'ਸ': 's', 'ਹ': 'h',
+      'ਖ਼': 'kh', 'ਗ਼': 'g', 'ਜ਼': 'z', 'ਫ਼': 'f', 'ੜ': 'ṛ'
+    };
+    
+    const vowelMarks = {
+      'ਾ': 'ā', 'ਿ': 'i', 'ੀ': 'ī', 'ੁ': 'u', 'ੂ': 'ū',
+      'ੇ': 'ē', 'ੈ': 'ai', 'ੋ': 'ō', 'ੌ': 'au'
+    };
+    
+    const others = {
+      '੍': '​', 'ਂ': 'ṃ', 'ੰ': 'ṁ', 'ਃ': 'ḥ',
+      '੦': '0', '੧': '1', '੨': '2', '੩': '3', '੪': '4',
+      '੫': '5', '੬': '6', '੭': '7', '੮': '8', '੯': '9',
+      '।': '.'
+    };
+    
+    // Combine all character mappings for lookup
+    const allChars = {...vowels, ...consonants, ...vowelMarks, ...others};
+    
+    const isGurmukhiChar = char => {
+        return Object.keys(allChars).includes(char) || 
+               char === ' ' || 
+               /[\u0A00-\u0A7F]/.test(char); // Unicode range for Gurmukhi
+    };
+
+    return processText(text, isGurmukhiChar, vowels, consonants, vowelMarks, others);
 }
 
 function transliterateGujarati(text) {
-  // Gujarati to ISO 15919 mapping would go here
-  return text; // Placeholder
+    // Define mapping from Gujarati to ISO 15919
+    const vowels = {
+      'અ': 'a', 'આ': 'ā', 'ઇ': 'i', 'ઈ': 'ī', 'ઉ': 'u', 'ઊ': 'ū',
+      'એ': 'ē', 'ઐ': 'ai', 'ઓ': 'ō', 'ઔ': 'au', 'ઋ': 'r̥', 'ૠ': 'r̥̄',
+      'ઌ': 'l̥', 'ૡ': 'l̥̄'
+    };
+    
+    const consonants = {
+      'ક': 'k', 'ખ': 'kh', 'ગ': 'g', 'ઘ': 'gh', 'ઙ': 'ṅ',
+      'ચ': 'c', 'છ': 'ch', 'જ': 'j', 'ઝ': 'jh', 'ઞ': 'ñ',
+      'ટ': 'ṭ', 'ઠ': 'ṭh', 'ડ': 'ḍ', 'ઢ': 'ḍh', 'ણ': 'ṇ',
+      'ત': 't', 'થ': 'th', 'દ': 'd', 'ધ': 'dh', 'ન': 'n',
+      'પ': 'p', 'ફ': 'ph', 'બ': 'b', 'ભ': 'bh', 'મ': 'm',
+      'ય': 'y', 'ર': 'r', 'લ': 'l', 'વ': 'v', 'શ': 'ś', 
+      'ષ': 'ṣ', 'સ': 's', 'હ': 'h',
+      'ક્ષ': 'kṣ', 'ત્ર': 'tr', 'જ્ઞ': 'jñ'
+    };
+    
+    const vowelMarks = {
+      'ા': 'ā', 'િ': 'i', 'ી': 'ī', 'ુ': 'u', 'ૂ': 'ū',
+      'ે': 'ē', 'ૈ': 'ai', 'ો': 'ō', 'ૌ': 'au', 'ૃ': 'r̥', 'ૄ': 'r̥̄',
+      'ૢ': 'l̥', 'ૣ': 'l̥̄'
+    };
+    
+    const others = {
+      '્': '​', 'ં': 'ṁ', 'ઃ': 'ḥ', 'ઁ': 'ṃ',
+      '૦': '0', '૧': '1', '૨': '2', '૩': '3', '૪': '4',
+      '૫': '5', '૬': '6', '૭': '7', '૮': '8', '૯': '9',
+      '।': '.'
+    };
+    
+    // Combine all character mappings for lookup
+    const allChars = {...vowels, ...consonants, ...vowelMarks, ...others};
+    
+    const isGujaratiChar = char => {
+        return Object.keys(allChars).includes(char) || 
+               char === ' ' || 
+               /[\u0A80-\u0AFF]/.test(char); // Unicode range for Gujarati
+    };
+
+    return processText(text, isGujaratiChar, vowels, consonants, vowelMarks, others);
 }
 
 function transliterateOdia(text) {
-  // Odia to ISO 15919 mapping would go here
-  return text; // Placeholder
+    // Define mapping from Odia to ISO 15919
+    const vowels = {
+      'ଅ': 'a', 'ଆ': 'ā', 'ଇ': 'i', 'ଈ': 'ī', 'ଉ': 'u', 'ଊ': 'ū',
+      'ଏ': 'ē', 'ଐ': 'ai', 'ଓ': 'ō', 'ଔ': 'au', 'ଋ': 'r̥', 'ୠ': 'r̥̄',
+      'ଌ': 'l̥', 'ୡ': 'l̥̄'
+    };
+    
+    const consonants = {
+      'କ': 'k', 'ଖ': 'kh', 'ଗ': 'g', 'ଘ': 'gh', 'ଙ': 'ṅ',
+      'ଚ': 'c', 'ଛ': 'ch', 'ଜ': 'j', 'ଝ': 'jh', 'ଞ': 'ñ',
+      'ଟ': 'ṭ', 'ଠ': 'ṭh', 'ଡ': 'ḍ', 'ଢ': 'ḍh', 'ଣ': 'ṇ',
+      'ତ': 't', 'ଥ': 'th', 'ଦ': 'd', 'ଧ': 'dh', 'ନ': 'n',
+      'ପ': 'p', 'ଫ': 'ph', 'ବ': 'b', 'ଭ': 'bh', 'ମ': 'm',
+      'ଯ': 'y', 'ର': 'r', 'ଲ': 'l', 'ୱ': 'v', 'ଶ': 'ś', 
+      'ଷ': 'ṣ', 'ସ': 's', 'ହ': 'h',
+      'କ୍ଷ': 'kṣ', 'ତ୍ର': 'tr', 'ଜ୍ଞ': 'jñ',
+      'ଡ଼': 'ṛ', 'ଢ଼': 'ṛh'
+    };
+    
+    const vowelMarks = {
+      'ା': 'ā', 'ି': 'i', 'ୀ': 'ī', 'ୁ': 'u', 'ୂ': 'ū',
+      'େ': 'ē', 'ୈ': 'ai', 'ୋ': 'ō', 'ୌ': 'au', 'ୃ': 'r̥', 'ୄ': 'r̥̄',
+      'ୢ': 'l̥', 'ୣ': 'l̥̄'
+    };
+    
+    const others = {
+      '୍': '​', 'ଂ': 'ṁ', 'ଃ': 'ḥ', 'ଁ': 'ṃ',
+      '୦': '0', '୧': '1', '୨': '2', '୩': '3', '୪': '4',
+      '୫': '5', '୬': '6', '୭': '7', '୮': '8', '୯': '9',
+      '।': '.'
+    };
+    
+    // Combine all character mappings for lookup
+    const allChars = {...vowels, ...consonants, ...vowelMarks, ...others};
+    
+    const isOdiaChar = char => {
+        return Object.keys(allChars).includes(char) || 
+               char === ' ' || 
+               /[\u0B00-\u0B7F]/.test(char); // Unicode range for Odia
+    };
+
+    return processText(text, isOdiaChar, vowels, consonants, vowelMarks, others);
 }
